@@ -9,7 +9,7 @@
         class="todo-text"
         placeholder="New todo"
       />
-      <datepicker v-on:update="dateUpdated"></datepicker>
+      <datepicker v-on:update="dateUpdated"/>
       <button class="todo-add-button" v-on:click="addTodo()">Add</button>
     </div> 
     <ul v-if="todos.length">
@@ -17,10 +17,11 @@
         <span class="todo-text list-header">Todo</span>
         <span class="todo-date list-header">Due date</span>
         <span class="todo-empty-button list-header"></span>
+        <span class="todo-empty-button list-header"></span>
       </li>
 
       <li class="todo" v-for="todo in todos" :key="todo.id">
-        <todo :todo="todo" v-on:remove="removeTodo(todo)"/>
+        <todo :todo="todo" v-on:remove="removeTodo(todo)" v-on:done="doneTodo(todo)"/>
       </li>
     </ul>
     <p class="none" v-else>Add a new todo in the input above</p>
@@ -60,6 +61,9 @@ export default {
     },
     removeTodo (item) {
       this.todos = this.todos.filter((_item) => _item !== item);
+    },
+    doneTodo (todo) {
+      
     },
     dateUpdated (date) {
       this.newTodoDate = date.clone();
@@ -128,6 +132,30 @@ body {
   flex: 1;
   border: 1px solid red;
   background-color: red;
+  color: white;
+  font-size: 0.8rem;
+  padding: 2px 4px;
+  cursor: pointer;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.todo-done-button {
+  flex: 1;
+  border: 1px solid green;
+  background-color: green;
+  color: white;
+  font-size: 0.8rem;
+  padding: 2px 4px;
+  cursor: pointer;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.todo-done-button:disabled {
+  flex: 1;
+  border: 1px solid rgb(146, 165, 144);
+  background-color:  rgb(146, 165, 144);
   color: white;
   font-size: 0.8rem;
   padding: 2px 4px;
