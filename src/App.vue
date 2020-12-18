@@ -31,6 +31,10 @@
 <script>
 import datepicker from "./components/datepicker.vue"
 import todo from "./components/todo"
+import API from "./api.js"
+
+const apiURL = "http://localhost:8081/todos"
+
 export default {
   name: "App",
   components: {
@@ -44,26 +48,40 @@ export default {
       todos: [],
     };
   },
+  mounted () {
+      this.api = new API(apiURL)
+    	this.getAllTodos()
+  },
   methods: {
+    getAllTodos () {
+      this.todos = [],
+      this.api.getAllTodos()
+      .then(data => {
+        for (let d of data) {
+          this.todos.push(d)
+        }
+        this.todos.sort((todoA, todoB) => -todoA.date.diff(todoB.date))
+      })
+    },
     addTodo() {
       if (this.newTodoText) {
-
-        this.todos.push({
+        this.api.addTodo({
           text: this.newTodoText,
           date: this.newTodoDate,
-          id: Date.now(),
           done: false
-        });
-        this.todos.sort((todoA, todoB) => -todoA.date.diff(todoB.date))
-
-        this.newTodoText = "";
+        }).then(todo => {
+          this.todos.push(todo)
+          this.todos.sort((todoA, todoB) => -todoA.date.diff(todoB.date))
+          this.newTodoText = "";
+        })
       }
     },
     removeTodo (item) {
       this.todos = this.todos.filter((_item) => _item !== item);
+      this.api.removeTodo(item.id)
     },
     doneTodo (todo) {
-      
+      this.api.updateTodo(todo)
     },
     dateUpdated (date) {
       this.newTodoDate = date.clone();
